@@ -86,9 +86,9 @@ function Dashboard() {
 
     const handleFilter = (gsm: number | '', width: number | '') => {
         console.log(gsm, width);
-        if (gsm !== '' && width !== '') setFilteredRows((prev) => prev.filter((v) => v.gsm === gsm && v.width === width));
-        if (gsm !== '' && width === '') setFilteredRows((prev) => prev.filter((v) => v.gsm === gsm));
-        if (gsm === '' && width !== '') setFilteredRows((prev) => prev.filter((v) => v.width === width));
+        if (gsm !== '' && width !== '') setFilteredRows(rows.filter((v) => v.gsm === gsm && v.width === width));
+        if (gsm !== '' && width === '') setFilteredRows(rows.filter((v) => v.gsm === gsm));
+        if (gsm === '' && width !== '') setFilteredRows(rows.filter((v) => v.width === width));
     };
 
     return (
