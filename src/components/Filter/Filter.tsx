@@ -34,6 +34,7 @@ const Filter: React.FC<FilterProps> = ({ gsm, width, onFilter }) => {
                         GSM
                     </InputLabel>
                     <Select onChange={handleGSMChange} value={gsmValue} label="GSM">
+                        <MenuItem value={''}>Any</MenuItem>
                         {gsm.map((value, index) => (
                             <MenuItem key={index} value={value}>
                                 {value}
@@ -48,6 +49,7 @@ const Filter: React.FC<FilterProps> = ({ gsm, width, onFilter }) => {
                         Ukuran
                     </InputLabel>
                     <Select onChange={handleWidthChange} value={widthValue} label="Ukuran">
+                        <MenuItem value={''}>Any</MenuItem>
                         {width.map((value, index) => (
                             <MenuItem key={index} value={value}>
                                 {value !== '' ? `${value} MM` : ''}
