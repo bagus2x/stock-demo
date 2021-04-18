@@ -3,7 +3,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         filter: {
-            padding: `${theme.spacing(2)}px`,
+            paddingTop: `${theme.spacing(2)}px`,
+            paddingLeft: `${theme.spacing(2)}px`,
+            paddingRight: `${theme.spacing(2)}px`,
             background: theme.palette.grey[50],
             boxSizing: 'border-box'
         },

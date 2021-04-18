@@ -12,6 +12,18 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         container: {
             flex: 1
+        },
+        action: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > *': {
+                flex: 1
+            }
+        },
+        buttonWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         }
     })
 );

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,9 +9,18 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import useStyles from './style';
 import Filter from '../../components/Filter';
+import IconButton from '@material-ui/core/IconButton';
+import RemoveCircleRoundedIcon from '@material-ui/icons/RemoveCircleRounded';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import { Typography } from '@material-ui/core';
 
 interface Column {
-    id: 'gsm' | 'width' | 'order' | 'item' | 'noMaterial' | 'lokasi';
+    id: 'gsm' | 'width' | 'order' | 'item' | 'noMaterial' | 'lokasi' | 'jumlah';
     label: string;
     minWidth?: number;
     align?: 'left' | 'right';
@@ -19,51 +28,59 @@ interface Column {
 }
 
 const columns: Column[] = [
-    { id: 'gsm', label: 'GSM', minWidth: 170 },
+    { id: 'gsm', label: 'GSM', minWidth: 100 },
     { id: 'width', label: 'Width', minWidth: 100 },
     {
         id: 'order',
         label: 'Order',
-        minWidth: 170,
+        minWidth: 100,
         align: 'left'
     },
     {
         id: 'item',
         label: 'Item',
-        minWidth: 170,
+        minWidth: 100,
         align: 'left'
     },
     {
         id: 'noMaterial',
         label: 'No. Material',
-        minWidth: 170,
+        minWidth: 100,
         align: 'left'
     },
     {
         id: 'lokasi',
         label: 'Lokasi',
-        minWidth: 170,
-        align: 'right'
+        minWidth: 100,
+        align: 'left'
+    },
+    {
+        id: 'jumlah',
+        label: 'Jumlah',
+        minWidth: 100,
+        align: 'left'
     }
 ];
 
+const r = { id: 1, gsm: 55, width: 1020, order: 31036865, item: 1, noMaterial: 40413352, lokasi: 'A1', jumlah: 1 };
+
 const rows = [
-    { id: 1, gsm: 55, width: 1020, order: 31036865, item: 1, noMaterial: 40413352, lokasi: 'A1' },
-    { id: 2, gsm: 55, width: 1020, order: 31036867, item: 1, noMaterial: 40413353, lokasi: 'A2' },
-    { id: 3, gsm: 55, width: 1020, order: 31036868, item: 2, noMaterial: 40413354, lokasi: 'A3' },
-    { id: 4, gsm: 55, width: 1020, order: 31036869, item: 1, noMaterial: 40413355, lokasi: 'B1' },
-    { id: 5, gsm: 55, width: 1020, order: 31036810, item: 3, noMaterial: 40413356, lokasi: 'B2' },
-    { id: 6, gsm: 55, width: 1020, order: 31036811, item: 10, noMaterial: 40413357, lokasi: 'B3' },
-    { id: 7, gsm: 55, width: 1020, order: 31036812, item: 11, noMaterial: 40413358, lokasi: 'B4' },
-    { id: 8, gsm: 55, width: 1020, order: 31036813, item: 3, noMaterial: 40413359, lokasi: 'B5' },
-    { id: 9, gsm: 55, width: 1020, order: 31036814, item: 2, noMaterial: 40413360, lokasi: 'C1' },
-    { id: 10, gsm: 55, width: 1020, order: 31036815, item: 4, noMaterial: 40413361, lokasi: 'C2' },
-    { id: 11, gsm: 55, width: 1020, order: 31036816, item: 4, noMaterial: 40413362, lokasi: 'C3' },
-    { id: 12, gsm: 55, width: 1020, order: 31036817, item: 3, noMaterial: 40413363, lokasi: 'C4' },
-    { id: 13, gsm: 55, width: 1020, order: 31036818, item: 2, noMaterial: 40413364, lokasi: 'D1' },
-    { id: 14, gsm: 55, width: 1020, order: 31036819, item: 1, noMaterial: 40413365, lokasi: 'D2' },
-    { id: 15, gsm: 55, width: 1020, order: 31036820, item: 6, noMaterial: 40413366, lokasi: 'D3' },
-    { id: 16, gsm: 55, width: 1020, order: 31036821, item: 3, noMaterial: 40413367, lokasi: 'D4' }
+    r,
+    { id: 2, gsm: 55, width: 1020, order: 31036867, item: 1, noMaterial: 40413353, lokasi: 'A2', jumlah: 2 },
+    { id: 3, gsm: 55, width: 1020, order: 31036868, item: 2, noMaterial: 40413354, lokasi: 'A3', jumlah: 1 },
+    { id: 4, gsm: 55, width: 1020, order: 31036869, item: 1, noMaterial: 40413355, lokasi: 'B1', jumlah: 4 },
+    { id: 5, gsm: 55, width: 1020, order: 31036810, item: 3, noMaterial: 40413356, lokasi: 'B2', jumlah: 2 },
+    { id: 6, gsm: 55, width: 1020, order: 31036811, item: 10, noMaterial: 40413357, lokasi: 'B3', jumlah: 3 },
+    { id: 7, gsm: 55, width: 1020, order: 31036812, item: 11, noMaterial: 40413358, lokasi: 'B4', jumlah: 1 },
+    { id: 8, gsm: 55, width: 1020, order: 31036813, item: 3, noMaterial: 40413359, lokasi: 'B5', jumlah: 2 },
+    { id: 9, gsm: 55, width: 1020, order: 31036814, item: 2, noMaterial: 40413360, lokasi: 'C1', jumlah: 1 },
+    { id: 10, gsm: 55, width: 1020, order: 31036815, item: 4, noMaterial: 40413361, lokasi: 'C2', jumlah: 3 },
+    { id: 11, gsm: 55, width: 1020, order: 31036816, item: 4, noMaterial: 40413362, lokasi: 'C3', jumlah: 1 },
+    { id: 12, gsm: 55, width: 1020, order: 31036817, item: 3, noMaterial: 40413363, lokasi: 'C4', jumlah: 2 },
+    { id: 13, gsm: 55, width: 1020, order: 31036818, item: 2, noMaterial: 40413364, lokasi: 'D1', jumlah: 1 },
+    { id: 14, gsm: 55, width: 1020, order: 31036819, item: 1, noMaterial: 40413365, lokasi: 'D2', jumlah: 1 },
+    { id: 15, gsm: 55, width: 1020, order: 31036820, item: 6, noMaterial: 40413366, lokasi: 'D3', jumlah: 5 },
+    { id: 16, gsm: 55, width: 1020, order: 31036821, item: 3, noMaterial: 40413367, lokasi: 'D4', jumlah: 3 }
 ];
 
 const gsm = [...new Set(rows.map((v) => v.gsm))];
@@ -74,8 +91,10 @@ function Dashboard() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [filteredRows, setFilteredRows] = useState<typeof rows>([]);
+    const [rowWillUpdate, setRowWillUpdate] = useState<{ row: typeof r; type: 'add' | 'subtract' } | null>(null);
+    const [jumlah, setJumlah] = useState(0);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -84,7 +103,20 @@ function Dashboard() {
         setPage(0);
     };
 
+    const handleUpdateItem = () => {
+        setFilteredRows((prev) =>
+            prev.map((item) => {
+                if (item.id === (rowWillUpdate?.row.id as number))
+                    return { ...item, jumlah: rowWillUpdate?.type === 'add' ? item.jumlah + jumlah : item.jumlah - jumlah };
+                return item;
+            })
+        );
+        setRowWillUpdate(null);
+        setJumlah(0);
+    };
+
     const handleFilter = (gsm: number | '', width: number | '') => {
+        if (gsm === '' && width === '') return;
         if (gsm === '' && width === '') setFilteredRows(rows);
         if (gsm !== '' && width !== '') setFilteredRows(rows.filter((v) => v.gsm === gsm && v.width === width));
         if (gsm !== '' && width === '') setFilteredRows(rows.filter((v) => v.gsm === gsm));
@@ -115,6 +147,27 @@ function Dashboard() {
                                     <TableCell align="left">{row.item}</TableCell>
                                     <TableCell align="left">{row.noMaterial}</TableCell>
                                     <TableCell align="left">{row.lokasi}</TableCell>
+                                    <TableCell align="left" className={classes.action}>
+                                        <span>{row.jumlah}</span>
+                                        <div className={classes.buttonWrapper}>
+                                            <IconButton
+                                                size="small"
+                                                edge="end"
+                                                color="primary"
+                                                onClick={() => setRowWillUpdate({ row: row, type: 'add' })}
+                                            >
+                                                <AddCircleRoundedIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                size="small"
+                                                edge="end"
+                                                color="secondary"
+                                                onClick={() => setRowWillUpdate({ row: row, type: 'subtract' })}
+                                            >
+                                                <RemoveCircleRoundedIcon />
+                                            </IconButton>
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}
@@ -131,6 +184,46 @@ function Dashboard() {
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
+            <Dialog
+                open={!!rowWillUpdate}
+                onClose={() => {
+                    setRowWillUpdate(null);
+                    setJumlah(0);
+                }}
+                aria-labelledby="form-dialog-title"
+            >
+                <DialogContent>
+                    <div>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            onChange={(e) => setJumlah(parseInt(e.target.value) || 0)}
+                            value={jumlah || ''}
+                            helperText={
+                                (rowWillUpdate?.row.jumlah as number) - jumlah < 0 && rowWillUpdate?.type === 'subtract'
+                                    ? 'Jumlah tidak mencukupi'
+                                    : ' '
+                            }
+                            error={(rowWillUpdate?.row.jumlah as number) - jumlah < 0 && rowWillUpdate?.type === 'subtract'}
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setRowWillUpdate(null);
+                            setJumlah(0);
+                        }}
+                        color="primary"
+                    >
+                        Cancel
+                    </Button>
+                    <Button onClick={handleUpdateItem} color="primary">
+                        {rowWillUpdate?.type === 'add' ? 'Tambah' : 'Kurangi'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Paper>
     );
 }
