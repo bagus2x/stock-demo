@@ -105,8 +105,10 @@ function Dashboard() {
     const handleUpdateItem = () => {
         setFilteredRows((prev) =>
             prev.map((item) => {
-                if (item.id === (rowWillUpdate?.row.id as number))
+                if (item.id === (rowWillUpdate?.row.id as number)) {
+                    if (item.jumlah - jumlah < 0 && rowWillUpdate?.type === 'subtract') return item;
                     return { ...item, jumlah: rowWillUpdate?.type === 'add' ? item.jumlah + jumlah : item.jumlah - jumlah };
+                }
                 return item;
             })
         );
